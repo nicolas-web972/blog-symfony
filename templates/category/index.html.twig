@@ -1,20 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
+{% block title %}Accueil!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/nicolaschalono/blog_symfo/src/Controller/CategoryController.php'|file_link(0) }}">src/Controller/CategoryController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/nicolaschalono/blog_symfo/templates/category/index.html.twig'|file_link(0) }}">templates/category/index.html.twig</a></code></li>
-    </ul>
+    <div class="container">
+    <div class="row">
+    {% for category in category %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card__header">
+            <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" class="card__image" width="600">
+            </div>
+            <div class="card__body">
+            <h4>{{ category.name }}</h4>
+            </div>
+            <div class="card__footer">
+            <div class="user">
+                <img src="https://i.pravatar.cc/40?img=2" alt="user__image" class="user__image">
+                <div class="user__info">
+                <h5>Categorie nb : {{ category.id }}</h5>
+                <small>Il y a 5 minutes</small>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+   <div class="navigation">
 </div>
 {% endblock %}

@@ -1,20 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-{{dump(post)}}
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/nicolaschalono/blog_symfo/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/nicolaschalono/blog_symfo/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
+    <div class="container">
+    <div class="row">
+    {% for post in posts %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card__header">
+            <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" class="card__image" width="600">
+            </div>
+            <div class="card__body">
+            <span class="tag tag-brown">{{ post.category.name }}</span>
+            <h4>{{ post.title }}</h4>
+            <p>{{ post.content|u.truncate(100, '...', false) }}</p>
+            </div>
+            <div class="card__footer">
+            <div class="user">
+                <img src="https://i.pravatar.cc/40?img=2" alt="user__image" class="user__image">
+                <div class="user__info">
+                <h5>{{ post.author }}</h5>
+                <small>Il y a 5 minutes</small>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+   <div class="navigation">
+    {{ knp_pagination_render(posts) }}
 </div>
 {% endblock %}

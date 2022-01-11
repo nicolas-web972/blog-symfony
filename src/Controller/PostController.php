@@ -10,8 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     #[Route('/post/{slug}', name: 'post')]
-    public function index(Post $post): Response
-    {
+    public function index(Post $post, ?string $slug = null): Response
+    {  
         return $this->render('post/index.html.twig', [
             'post' => '$post',
         ]);
