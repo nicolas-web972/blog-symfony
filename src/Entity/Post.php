@@ -5,7 +5,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Controller\ProjectAction;
+use App\Controller\Api\ProjectAction;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
@@ -24,7 +24,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'get',
         'post_image' => [
             'method' => 'POST',
-            'path' => '/post/{id}/image',
+            'path' => '/uploads/{id}/image',
             'controller' => ProjectAction::class,
             'deserialize' => false,
             'openapi_context' => [

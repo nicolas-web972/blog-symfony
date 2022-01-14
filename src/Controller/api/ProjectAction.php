@@ -1,7 +1,7 @@
 <?php
 // api/src/Controller/ProjectAction.php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
