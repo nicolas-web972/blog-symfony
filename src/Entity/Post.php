@@ -1,13 +1,57 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\ProjectAction;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
+#[ApiResource(
+    iri: 'http://schema.org/post',
+    normalizationContext: ['groups' => ['post:read']],
+    denormalizationContext: ['groups' => ['post:write']],
+    collectionOperations: [
+        'get',
+        'post_image' => [
+            'method' => 'POST',
+            'path' => '/post/{id}/image',
+            'controller' => ProjectAction::class,
+            'deserialize' => false,
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'image' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    // normalizationContext:['groups'=> ['read_post']],
+    // denormalizationContext:['groups'=> ['write_post']]
+
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'asc', 'content' => 'partial'])]
 class Post implements SluggableInterface
 {
     
@@ -16,12 +60,15 @@ class Post implements SluggableInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['read_post'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['write_post','read_post'])]
     private $title;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['write_post','read_post'])]
     private $content;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -33,6 +80,9 @@ class Post implements SluggableInterface
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $category;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $image;
 
     public function getId(): ?int
     {
@@ -108,5 +158,32 @@ class Post implements SluggableInterface
     {
         return implode('-', $values);
     }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    #[ApiProperty(iri: 'http://schema.org/contentUrl')]
+    #[Groups(['post:read'])]
+    public ?string $contentUrl = null;
+
+    /**
+     * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
+     */
+    #[Groups(['post:write'])]
+    public ?File $file = null;
+
+    /**
+     * @ORM\Column(nullable=true)
+     */
+    public ?string $filePath = null;
 }
 
